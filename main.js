@@ -22,7 +22,7 @@ boxes.forEach(box => {
   });
 });
 
-fetch('/assets/pklist.json')
+fetch('/pklist.json')
   .then(res => res.json())
   .then(pokemonList => {
     const container = document.getElementById('pokemon-list');
