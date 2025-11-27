@@ -34,13 +34,22 @@
   content: '✖';
   color: red;
   position: absolute;
-  top: -5px;
-  right: -5px;
-  font-size: 18px;
+  top: 2px;      /* separa un poco del borde superior */
+  right: 2px;    /* separa un poco del borde derecho */
+  font-size: 20px;
   font-weight: bold;
   pointer-events: none;
   user-select: none;
+  background: white; /* para asegurar contraste */
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  z-index: 10;
 }
+
 
 #teams {
   display: flex;
