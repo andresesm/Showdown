@@ -246,8 +246,12 @@ pokemonContainer.addEventListener('drop', e => {
 // ---------- carga inicial de sprites y estado ----------
 fetch('./pklist.json')
   .then(res => res.json())
-  .then(pokemonList => {
-    pokemonList.forEach(name => {
+  .then(list => {
+    // Ya viene ordenado por dex, pero por si acaso:
+    list.sort((a, b) => a.dex - b.dex);
+
+    list.forEach(p => {
+      const name = p.name; // nombre del sprite
       const img = document.createElement('img');
       img.src = `assets/pokemonsprites/${name}.png`;
       img.alt = name;
@@ -255,6 +259,7 @@ fetch('./pklist.json')
       img.draggable = true;
       img.className = 'sprite';
       img.dataset.name = name;
+      img.dataset.dex = p.dex;
       img.dataset.location = 'pool';
       addDragEvents(img);
       pokemonContainer.appendChild(img);
@@ -263,7 +268,8 @@ fetch('./pklist.json')
     const saved = loadState();
     if (saved) applyStateToDOM(saved);
   })
-  .catch(err => console.error('Error cargando lista de Pokémon:', err));
+  .catch(err => console.error('Error cargando pklist.json:', err));
+
 
 // ---------- buscador ----------
 const searchInput = document.getElementById('pokemon-search');
