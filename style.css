@@ -41,7 +41,6 @@
   position: relative;
 }
 
-/* Si luego quieres recuperar la X, puedes reactivar esta regla */
 .sprite.disabled::after {
   content: '';
 }
@@ -59,29 +58,36 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   box-sizing: border-box;
+  background: #fff;
+}
+
+.team-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
 .team-box-title {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
   color: gray;
   user-select: none;
-  position: absolute;
-  top: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
-  opacity: 0.3;
-  z-index: 0;
-  width: 100%;
-  text-align: center;
 }
 
+.toggle-box-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
+/* área de pokémon: ocupa todo el espacio disponible entre header y botones */
 .team-box-content {
+  flex: 1;
   width: 100%;
-  margin-top: 30px;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -96,15 +102,14 @@
 }
 
 .team-box-buttons {
-  margin-top: auto; /* fuerza que los botones queden abajo */
-  padding-top: 10px;
+  margin-top: 8px;
   width: 100%;
   display: flex;
   justify-content: space-around;
 }
 
 .team-box-buttons button {
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
   background: transparent;
   border: none;
@@ -113,4 +118,10 @@
 
 .team-box-buttons button:hover {
   color: #007bff;
+}
+
+/* Estado caja oculta: se esconde solo contenido+botones */
+.team-box.collapsed .team-box-content,
+.team-box.collapsed .team-box-buttons {
+  display: none;
 }
