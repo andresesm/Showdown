@@ -7,6 +7,10 @@ function addDragEvents(sprite) {
   });
 }
 
+function capitalizeName(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ');
+}
+
 boxes.forEach(box => {
   box.addEventListener('dragover', e => e.preventDefault());
   box.addEventListener('drop', e => {
@@ -19,6 +23,13 @@ boxes.forEach(box => {
     img.className = 'sprite';
     addDragEvents(img);
     box.appendChild(img);
+
+    // Punto 3: Deshabilitar el sprite original en la lista
+    const container = document.getElementById('pokemon-list');
+    const original = container.querySelector(`img[data-name="${name}"]`);
+    if (original) {
+      original.classList.add('disabled');
+    }
   });
 });
 
@@ -28,8 +39,9 @@ fetch('./pklist.json')
     const container = document.getElementById('pokemon-list');
     pokemonList.forEach(name => {
       const img = document.createElement('img');
-      img.src = `/assets/pokemonsprites/${name}.png`;
+      img.src = `assets/pokemonsprites/${name}.png`;
       img.alt = name;
+      img.title = capitalizeName(name);
       img.draggable = true;
       img.className = 'sprite';
       img.dataset.name = name;
@@ -38,3 +50,17 @@ fetch('./pklist.json')
     });
   })
   .catch(err => console.error('Error cargando lista de Pokémon:', err));
+
+  const searchInput = document.getElementById('pokemon-search');
+searchInput.addEventListener('input', () => {
+  const filter = searchInput.value.toLowerCase();
+  const container = document.getElementById('pokemon-list');
+  Array.from(container.children).forEach(img => {
+    const name = img.dataset.name.toLowerCase();
+    if (name.includes(filter)) {
+      img.style.display = '';
+    } else {
+      img.style.display = 'none';
+    }
+  });
+});
