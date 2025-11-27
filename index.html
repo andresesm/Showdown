@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Creador de Equipos Pokémon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Arma tu equipo Pokémon</h1>
+  <div id="pokemon-list"></div>
+
+  <div id="teams">
+    <div class="team-box" data-box="1">Equipo 1</div>
+    <div class="team-box" data-box="2">Equipo 2</div>
+  </div>
+
+  <button onclick="exportTeams()">Descargar equipos</button>
+  <input type="file" id="importTeamsInput" style="display:none;">
+  <button onclick="document.getElementById('importTeamsInput').click()">Importar equipos</button>
+
+  <script>
+    // Carga dinámica de sprites desde pokemon-list.json
+    fetch('/assets/pokemon-list.json')
+      .then(res => res.json())
+      .then(pokemonList => {
+        const container = document.getElementById('pokemon-list');
+        pokemonList.forEach(name => {
+          const img = document.createElement('img');
+          img.src = `/assets/pokemonsprites/${name}.png`;
+          img.alt = name;
+          img.draggable = true;
+          img.className = 'sprite';
+          img.dataset.name = name;
+          container.appendChild(img);
+        });
+      })
+      .catch(err => console.error('Error cargando lista de Pokémon:', err));
+  </script>
+
+  <script src="main.js"></script>
+</body>
+</html>

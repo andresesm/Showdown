@@ -1,0 +1,4 @@
+#pokemon-list { display: flex; gap: 10px; margin-bottom: 20px; }
+.sprite { width: 50px; cursor: grab; }
+#teams { display: flex; gap: 30px; }
+.team-box { width: 180px; height: 180px; border: 2px dashed #333; padding: 10px; }
