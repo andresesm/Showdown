@@ -3,6 +3,19 @@ const teamsContainer = document.getElementById('teams');
 const addTeamBtn = document.getElementById('add-team-btn');
 const TEAM_STATE_KEY = 'pokemon-teams-state-v3';
 
+// ===== CARGAR DATOS DE EQUIPOS (JSON) =====
+
+let pokemonTeamsData = {}; // sprite_name -> datos de equipo
+
+fetch('assets/pokemon-teams-data.json')
+  .then(res => res.json())
+  .then(data => {
+    pokemonTeamsData = data;
+    console.log('✓ Datos de equipos cargados:', Object.keys(pokemonTeamsData).length, 'Pokémon');
+  })
+  .catch(err => console.error('Error cargando assets/pokemon-teams-data.json:', err));
+
+
 // ---------- utilidades ----------
 function addDragEvents(sprite) {
   sprite.addEventListener('dragstart', (e) => {
@@ -23,6 +36,7 @@ function generateTeamId() {
   while (existingIds.includes(id)) id++;
   return id;
 }
+
 
 // ---------- estado ----------
 function getStateFromDOM() {
@@ -57,6 +71,59 @@ function loadState() {
     return null;
   }
 }
+
+
+// ---------- EXPORTAR EQUIPO ----------
+function exportTeamToClipboard(boxIndex, boxName) {
+  const box = document.querySelector(`.team-box[data-box="${boxIndex}"] .team-box-content`);
+
+  if (!box) {
+    alert('No se encontró la caja');
+    return;
+  }
+
+  const sprites = Array.from(box.querySelectorAll('img.sprite'));
+
+  if (sprites.length === 0) {
+    alert('La caja está vacía');
+    return;
+  }
+
+  let exportText = boxName + '\n\n';
+
+  sprites.forEach((sprite) => {
+    const spriteName = sprite.dataset.name; // ej: "bulbasaur"
+    const data = pokemonTeamsData[spriteName];
+
+    if (!data) {
+      console.warn('No hay datos para', spriteName);
+      return;
+    }
+
+    exportText += data.name + '\n';
+    exportText += 'Ability: ' + data.ability + '\n';
+    exportText += 'EVs: ' +
+      data.evs.hp  + ' HP / ' +
+      data.evs.atk + ' Atk / ' +
+      data.evs.def + ' Def / ' +
+      data.evs.spa + ' SpA / ' +
+      data.evs.spd + ' SpD / ' +
+      data.evs.spe + ' Spe\n';
+    exportText += data.nature + ' Nature\n';
+    exportText += '- ' + data.moves[0] + '\n';
+    exportText += '- ' + data.moves[1] + '\n';
+    exportText += '- ' + data.moves[2] + '\n';
+    exportText += '- ' + data.moves[3] + '\n\n';
+  });
+
+  navigator.clipboard.writeText(exportText).then(() => {
+    alert('✓ Equipo copiado al portapapeles');
+    console.log(exportText);
+  }).catch(err => {
+    console.error('Error al copiar:', err);
+  });
+}
+
 
 // ---------- creación dinámica de cajas ----------
 function createTeamBox(boxState) {
@@ -155,7 +222,6 @@ function createTeamBox(boxState) {
   // botón cerrar caja (X)
   const closeBtn = box.querySelector('.close-box-btn');
   closeBtn.addEventListener('click', () => {
-    // devolver pokémon como si fuera papelera
     const sprites = Array.from(content.children);
     sprites.forEach(sprite => {
       const name = sprite.dataset.name;
@@ -166,6 +232,14 @@ function createTeamBox(boxState) {
 
     box.remove();
     saveState();
+  });
+
+  // botón exportar
+  const exportBtn = box.querySelector('.export-btn');
+  exportBtn.addEventListener('click', () => {
+    const titleEl = box.querySelector('.team-box-title');
+    const boxName = (titleEl && titleEl.textContent.trim()) || `Equipo ${id}`;
+    exportTeamToClipboard(id, boxName);
   });
 
   // guardar cambios de nombre
@@ -207,6 +281,7 @@ function applyStateToDOM(state) {
   }
 }
 
+
 // ---------- drop en pool ----------
 pokemonContainer.addEventListener('dragover', e => e.preventDefault());
 pokemonContainer.addEventListener('drop', e => {
@@ -243,11 +318,11 @@ pokemonContainer.addEventListener('drop', e => {
   saveState();
 });
 
+
 // ---------- carga inicial de sprites y estado ----------
 fetch('./pklist.json')
   .then(res => res.json())
   .then(list => {
-    // Ya viene ordenado por dex, pero por si acaso:
     list.sort((a, b) => a.dex - b.dex);
 
     list.forEach(p => {
@@ -280,6 +355,7 @@ searchInput.addEventListener('input', () => {
     img.style.display = name.includes(filter) ? '' : 'none';
   });
 });
+
 
 // ---------- botón agregar caja ----------
 addTeamBtn.addEventListener('click', () => {
