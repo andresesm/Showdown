@@ -1,24 +1,35 @@
+#pokemon-search {
+  width: 500px;
+  max-width: 100%;
+  padding: 7px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
 #pokemon-list-container {
-  width: 100%;
-  max-height: 500px; /* altura máxima con scroll */
+  width: 500px;
+  max-width: 100%;
+  max-height: 500px;
   overflow-y: auto;
   border: 1px solid #ccc;
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  box-sizing: border-box;
 }
 
 #pokemon-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
 }
 
 .sprite {
-  width: 50px;
+  width: 75px; /* 1.5x original 50px */
   cursor: grab;
   position: relative;
 }
@@ -34,13 +45,13 @@
   content: '✖';
   color: red;
   position: absolute;
-  top: 2px;      /* separa un poco del borde superior */
-  right: 2px;    /* separa un poco del borde derecho */
+  top: 2px;
+  right: 2px;
   font-size: 20px;
   font-weight: bold;
   pointer-events: none;
   user-select: none;
-  background: white; /* para asegurar contraste */
+  background: white;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -50,16 +61,66 @@
   z-index: 10;
 }
 
-
 #teams {
   display: flex;
-  gap: 30px;
+  gap: 40px;
 }
 
 .team-box {
-  width: 180px;
-  height: 180px;
+  width: 200px;
   border: 2px dashed #333;
   padding: 10px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.team-box-title {
+  font-weight: bold;
+  font-size: 20px;
+  color: gray;
+  user-select: none;
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0.3;
+  z-index: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.team-box-content {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px; /* espacio para el título */
+  overflow: auto;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.team-box-buttons {
+  margin-top: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.team-box-buttons button {
+  font-size: 20px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  user-select: none;
+}
+
+.team-box-buttons button:hover {
+  color: #007bff;
 }

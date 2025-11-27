@@ -1,4 +1,4 @@
-const boxes = document.querySelectorAll('.team-box');
+const boxes = document.querySelectorAll('.team-box-content');
 
 function addDragEvents(sprite) {
   sprite.addEventListener('dragstart', (e) => {
@@ -15,16 +15,31 @@ boxes.forEach(box => {
   box.addEventListener('dragover', e => e.preventDefault());
   box.addEventListener('drop', e => {
     e.preventDefault();
+
+    if (box.children.length >= 6) {
+      alert('No puedes agregar más de 6 pokémones en un equipo.');
+      return;
+    }
+
     const name = e.dataTransfer.getData('name');
     const src = e.dataTransfer.getData('src');
+
+    // No agregar si ya está en el equipo
+    const alreadyInTeam = Array.from(box.children).some(child => child.dataset.name === name);
+    if (alreadyInTeam) {
+      alert('Este Pokémon ya está en el equipo.');
+      return;
+    }
+
     const img = document.createElement('img');
     img.src = src;
     img.alt = name;
     img.className = 'sprite';
+    img.dataset.name = name;
     addDragEvents(img);
     box.appendChild(img);
 
-    // Punto 3: Deshabilitar el sprite original en la lista
+    // Deshabilitar en el listado principal
     const container = document.getElementById('pokemon-list');
     const original = container.querySelector(`img[data-name="${name}"]`);
     if (original) {
@@ -51,16 +66,13 @@ fetch('./pklist.json')
   })
   .catch(err => console.error('Error cargando lista de Pokémon:', err));
 
-  const searchInput = document.getElementById('pokemon-search');
+// Buscador en tiempo real
+const searchInput = document.getElementById('pokemon-search');
 searchInput.addEventListener('input', () => {
   const filter = searchInput.value.toLowerCase();
   const container = document.getElementById('pokemon-list');
   Array.from(container.children).forEach(img => {
     const name = img.dataset.name.toLowerCase();
-    if (name.includes(filter)) {
-      img.style.display = '';
-    } else {
-      img.style.display = 'none';
-    }
+    img.style.display = name.includes(filter) ? '' : 'none';
   });
 });
