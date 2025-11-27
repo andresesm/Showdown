@@ -31,8 +31,19 @@ h1 {
   text-align: center;
   margin-top: 0;
   margin-bottom: 20px;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-size: 42px;
+
+  /* Colores estilo Pokémon */
+  color: #ffcc00;                 /* amarillo interior */
+  text-shadow:
+    -3px -3px 0 #3565ad,
+     3px -3px 0 #3565ad,
+    -3px  3px 0 #3565ad,
+     3px  3px 0 #3565ad,
+     0px  0px 6px rgba(0,0,0,0.5); /* borde azul + ligero glow */
 }
+
 
 /* buscador y contenedor principal */
 
