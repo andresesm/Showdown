@@ -364,3 +364,54 @@ addTeamBtn.addEventListener('click', () => {
   createTeamBox(newBoxState);
   saveState();
 });
+
+// ---------- randomizador visual ----------
+
+const randomizerBtn = document.getElementById('randomizer-btn');
+const randomizerSpinBtn = document.getElementById('randomizer-spin-btn');
+const randomizerImg = document.getElementById('randomizer-sprite');
+const randomizerName = document.getElementById('randomizer-name');
+
+let randomizerInterval = null;
+let randomizerRunning = false;
+
+// Función que elige un Pokémon aleatorio de la lista
+function pickRandomPokemon() {
+  if (!allPokemonNames.length) return null;
+  const name = allPokemonNames[Math.floor(Math.random() * allPokemonNames.length)];
+  return name;
+}
+
+// Animación tipo “carrusel rápido”
+function startRandomizerAnimation() {
+  if (randomizerRunning) return;
+  randomizerRunning = true;
+
+  let ticks = 0;
+  const maxTicks = 25; // cuántos cambios hace antes de detenerse
+  const delay = 80;    // ms entre cambios
+
+  randomizerInterval = setInterval(() => {
+    const name = pickRandomPokemon();
+    if (!name) return;
+
+    randomizerImg.src = `assets/pokemonsprites/webp/${name}.webp`;
+    randomizerImg.alt = name;
+    randomizerImg.title = capitalizeName(name);
+    randomizerName.textContent = capitalizeName(name);
+
+    ticks++;
+    if (ticks >= maxTicks) {
+      clearInterval(randomizerInterval);
+      randomizerRunning = false;
+    }
+  }, delay);
+}
+
+randomizerBtn.addEventListener('click', () => {
+  startRandomizerAnimation();
+});
+
+randomizerSpinBtn.addEventListener('click', () => {
+  startRandomizerAnimation();
+});
