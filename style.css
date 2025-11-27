@@ -15,7 +15,7 @@ html, body {
 }
 
 #app {
-  max-width: 900px;
+  max-width: 1100px; /* antes 900px */
   margin: 20px auto;
   padding: 10px 20px 40px;
   box-sizing: border-box;
@@ -38,7 +38,7 @@ h1 {
 
 #pokemon-search {
   width: 100%;
-  max-width: 860px;
+  max-width: 1060px; /* acompaña nuevo ancho */
   padding: 8px 10px;
   margin: 0 auto 12px;
   font-size: 16px;
@@ -48,7 +48,7 @@ h1 {
 
 #pokemon-list-container {
   width: 100%;
-  max-width: 860px;
+  max-width: 1060px; /* acompaña nuevo ancho */
   max-height: 420px;
   overflow-y: auto;
   border: 1px solid #ccc;
@@ -91,7 +91,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 860px;
+  max-width: 1060px; /* igual que container */
   margin: 0 auto 10px;
   font-weight: bold;
   font-family: 'PK', system-ui, sans-serif;
@@ -119,7 +119,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  max-width: 860px;
+  max-width: 1060px; /* espacio para 4 cajas de 220px + gaps */
   margin: 0 auto;
   justify-content: flex-start;
 }
