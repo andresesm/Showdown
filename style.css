@@ -45,8 +45,33 @@
   content: '';
 }
 
+#teams-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+#add-team-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #333;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 24px;
+  padding: 0;
+}
+
+#add-team-btn:hover {
+  background: #f0f0f0;
+}
+
 #teams {
   display: flex;
+  flex-wrap: wrap;
   gap: 40px;
 }
 
@@ -76,15 +101,17 @@
   user-select: none;
 }
 
-.toggle-box-btn {
+.toggle-box-btn,
+.close-box-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   user-select: none;
+  margin-left: 4px;
 }
 
-/* área de pokémon: ocupa todo el espacio disponible entre header y botones */
+/* área de pokémon */
 .team-box-content {
   flex: 1;
   width: 100%;
@@ -120,7 +147,7 @@
   color: #007bff;
 }
 
-/* Estado caja oculta: se esconde solo contenido+botones */
+/* ocultar caja: solo se ve header */
 .team-box.collapsed .team-box-content,
 .team-box.collapsed .team-box-buttons {
   display: none;

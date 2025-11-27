@@ -15,32 +15,13 @@
     <div id="pokemon-list"></div>
   </div>
 
-  <div id="teams">
-    <div class="team-box" data-box="1">
-      <div class="team-box-header">
-        <span class="team-box-title" contenteditable="true" data-box-title="1">Equipo 1</span>
-        <button class="toggle-box-btn" data-box-toggle="1" title="Ocultar/mostrar">👁</button>
-      </div>
-      <div class="team-box-content" data-box-content="1"></div>
-      <div class="team-box-buttons">
-        <button class="import-btn" data-box-import="1" title="Importar">⬆</button>
-        <button class="clear-btn" data-box-clear="1" title="Vaciar caja">🗑</button>
-        <button class="export-btn" data-box-export="1" title="Exportar">⬇</button>
-      </div>
-    </div>
+  <div id="teams-header">
+    <span>Equipos</span>
+    <button id="add-team-btn" title="Agregar equipo">+</button>
+  </div>
 
-    <div class="team-box" data-box="2">
-      <div class="team-box-header">
-        <span class="team-box-title" contenteditable="true" data-box-title="2">Equipo 2</span>
-        <button class="toggle-box-btn" data-box-toggle="2" title="Ocultar/mostrar">👁</button>
-      </div>
-      <div class="team-box-content" data-box-content="2"></div>
-      <div class="team-box-buttons">
-        <button class="import-btn" data-box-import="2" title="Importar">⬆</button>
-        <button class="clear-btn" data-box-clear="2" title="Vaciar caja">🗑</button>
-        <button class="export-btn" data-box-export="2" title="Exportar">⬇</button>
-      </div>
-    </div>
+  <div id="teams">
+    <!-- Las cajas se generan dinámicamente desde main.js -->
   </div>
 
   <script src="main.js"></script>
