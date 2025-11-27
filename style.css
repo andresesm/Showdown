@@ -5,17 +5,24 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'PKGF';
+  src: url('assets/font/pkgf.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* layout general centrado */
 
 html, body {
   margin: 0;
   padding: 0;
   background: #f5f5f5;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'PKGF', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 #app {
-  max-width: 1100px; /* antes 900px */
+  max-width: 1100px;
   margin: 20px auto;
   padding: 10px 20px 40px;
   box-sizing: border-box;
@@ -33,33 +40,31 @@ h1 {
   margin-bottom: 20px;
   letter-spacing: 2px;
   font-size: 42px;
-
-  /* Colores estilo Pokémon */
-  color: #ffcc00;                 /* amarillo interior */
+  color: #ffcc00;
   text-shadow:
     -3px -3px 0 #3565ad,
      3px -3px 0 #3565ad,
     -3px  3px 0 #3565ad,
      3px  3px 0 #3565ad,
-     0px  0px 6px rgba(0,0,0,0.5); /* borde azul + ligero glow */
+     0px  0px 6px rgba(0,0,0,0.5);
 }
-
 
 /* buscador y contenedor principal */
 
 #pokemon-search {
   width: 100%;
-  max-width: 1060px; /* acompaña nuevo ancho */
+  max-width: 1060px;
   padding: 8px 10px;
   margin: 0 auto 12px;
   font-size: 16px;
   box-sizing: border-box;
   display: block;
+  font-family: 'PKGF', system-ui, sans-serif;
 }
 
 #pokemon-list-container {
   width: 100%;
-  max-width: 1060px; /* acompaña nuevo ancho */
+  max-width: 1060px;
   max-height: 420px;
   overflow-y: auto;
   border: 1px solid #ccc;
@@ -102,10 +107,10 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1060px; /* igual que container */
+  max-width: 1060px;
   margin: 0 auto 10px;
   font-weight: bold;
-  font-family: 'PK', system-ui, sans-serif;
+  font-family: 'PKGF', system-ui, sans-serif;
 }
 
 #add-team-btn {
@@ -118,6 +123,7 @@ h1 {
   font-size: 18px;
   line-height: 24px;
   padding: 0;
+  font-family: 'PKGF', system-ui, sans-serif;
 }
 
 #add-team-btn:hover {
@@ -130,7 +136,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  max-width: 1060px; /* espacio para 4 cajas de 220px + gaps */
+  max-width: 1060px;
   margin: 0 auto;
   justify-content: flex-start;
 }
@@ -162,7 +168,7 @@ h1 {
   font-size: 18px;
   color: gray;
   user-select: none;
-  font-family: 'PK', system-ui, sans-serif;
+  font-family: 'PKGF', system-ui, sans-serif;
 }
 
 .toggle-box-btn,
@@ -206,6 +212,7 @@ h1 {
   background: transparent;
   border: none;
   user-select: none;
+  font-family: 'PKGF', system-ui, sans-serif;
 }
 
 .team-box-buttons button:hover {
