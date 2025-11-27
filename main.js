@@ -3,6 +3,9 @@ const teamsContainer = document.getElementById('teams');
 const addTeamBtn = document.getElementById('add-team-btn');
 const TEAM_STATE_KEY = 'pokemon-teams-state-v3';
 
+// lista global para el randomizador
+let allPokemonNames = [];
+
 // ===== CARGAR DATOS DE EQUIPOS (JSON) =====
 
 let pokemonTeamsData = {}; // sprite_name -> datos de equipo
@@ -14,7 +17,6 @@ fetch('assets/pokemon-teams-data.json')
     console.log('✓ Datos de equipos cargados:', Object.keys(pokemonTeamsData).length, 'Pokémon');
   })
   .catch(err => console.error('Error cargando assets/pokemon-teams-data.json:', err));
-
 
 // ---------- utilidades ----------
 function addDragEvents(sprite) {
@@ -36,7 +38,6 @@ function generateTeamId() {
   while (existingIds.includes(id)) id++;
   return id;
 }
-
 
 // ---------- estado ----------
 function getStateFromDOM() {
@@ -71,7 +72,6 @@ function loadState() {
     return null;
   }
 }
-
 
 // ---------- EXPORTAR EQUIPO ----------
 function exportTeamToClipboard(boxIndex, boxName) {
@@ -123,7 +123,6 @@ function exportTeamToClipboard(boxIndex, boxName) {
     console.error('Error al copiar:', err);
   });
 }
-
 
 // ---------- creación dinámica de cajas ----------
 function createTeamBox(boxState) {
@@ -281,7 +280,6 @@ function applyStateToDOM(state) {
   }
 }
 
-
 // ---------- drop en pool ----------
 pokemonContainer.addEventListener('dragover', e => e.preventDefault());
 pokemonContainer.addEventListener('drop', e => {
@@ -318,7 +316,6 @@ pokemonContainer.addEventListener('drop', e => {
   saveState();
 });
 
-
 // ---------- carga inicial de sprites y estado ----------
 fetch('./pklist.json')
   .then(res => res.json())
@@ -327,6 +324,8 @@ fetch('./pklist.json')
 
     list.forEach(p => {
       const name = p.name; // nombre del sprite
+      allPokemonNames.push(name); // para el randomizador
+
       const img = document.createElement('img');
       img.src = `assets/pokemonsprites/webp/${name}.webp`;
       img.alt = name;
@@ -345,7 +344,6 @@ fetch('./pklist.json')
   })
   .catch(err => console.error('Error cargando pklist.json:', err));
 
-
 // ---------- buscador ----------
 const searchInput = document.getElementById('pokemon-search');
 searchInput.addEventListener('input', () => {
@@ -355,7 +353,6 @@ searchInput.addEventListener('input', () => {
     img.style.display = name.includes(filter) ? '' : 'none';
   });
 });
-
 
 // ---------- botón agregar caja ----------
 addTeamBtn.addEventListener('click', () => {
@@ -368,28 +365,31 @@ addTeamBtn.addEventListener('click', () => {
 // ---------- randomizador visual ----------
 
 const randomizerBtn = document.getElementById('randomizer-btn');
-const randomizerSpinBtn = document.getElementById('randomizer-spin-btn');
 const randomizerImg = document.getElementById('randomizer-sprite');
 const randomizerName = document.getElementById('randomizer-name');
 
 let randomizerInterval = null;
 let randomizerRunning = false;
 
-// Función que elige un Pokémon aleatorio de la lista
 function pickRandomPokemon() {
-  if (!allPokemonNames.length) return null;
-  const name = allPokemonNames[Math.floor(Math.random() * allPokemonNames.length)];
-  return name;
+  if (!allPokemonNames || allPokemonNames.length === 0) return null;
+  const idx = Math.floor(Math.random() * allPokemonNames.length);
+  return allPokemonNames[idx];
 }
 
-// Animación tipo “carrusel rápido”
 function startRandomizerAnimation() {
   if (randomizerRunning) return;
+  if (!allPokemonNames || allPokemonNames.length === 0) {
+    alert('Aún no se han cargado los pokémon.');
+    return;
+  }
+
   randomizerRunning = true;
+  randomizerBtn.disabled = true;
 
   let ticks = 0;
-  const maxTicks = 25; // cuántos cambios hace antes de detenerse
-  const delay = 80;    // ms entre cambios
+  const maxTicks = 25;
+  const delay = 80;
 
   randomizerInterval = setInterval(() => {
     const name = pickRandomPokemon();
@@ -404,14 +404,14 @@ function startRandomizerAnimation() {
     if (ticks >= maxTicks) {
       clearInterval(randomizerInterval);
       randomizerRunning = false;
+      randomizerBtn.disabled = false;
+      randomizerBtn.textContent = 'Girar otra vez';
     }
   }, delay);
 }
 
-randomizerBtn.addEventListener('click', () => {
-  startRandomizerAnimation();
-});
-
-randomizerSpinBtn.addEventListener('click', () => {
-  startRandomizerAnimation();
-});
+if (randomizerBtn) {
+  randomizerBtn.addEventListener('click', () => {
+    startRandomizerAnimation();
+  });
+}
