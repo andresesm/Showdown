@@ -1,7 +1,8 @@
 const teamBoxes = document.querySelectorAll('.team-box-content');
 const pokemonContainer = document.getElementById('pokemon-list');
+const TEAM_STATE_KEY = 'pokemon-teams-state-v1';
 
-// drag común
+// ---------- utilidades ----------
 function addDragEvents(sprite) {
   sprite.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('name', sprite.dataset.name);
@@ -14,7 +15,77 @@ function capitalizeName(name) {
   return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, ' ');
 }
 
-// drop en cajas
+function getStateFromDOM() {
+  const boxes = [1, 2].map(i => {
+    const boxContent = document.querySelector(`.team-box-content[data-box-content="${i}"]`);
+    const titleEl = document.querySelector(`[data-box-title="${i}"]`);
+    const names = Array.from(boxContent.children).map(img => img.dataset.name);
+    return {
+      id: i,
+      title: titleEl ? titleEl.textContent.trim() : `Equipo ${i}`,
+      pokemon: names
+    };
+  });
+  return { boxes };
+}
+
+function applyStateToDOM(state) {
+  if (!state || !state.boxes) return;
+
+  // limpiar cajas
+  [1, 2].forEach(i => {
+    const boxContent = document.querySelector(`.team-box-content[data-box-content="${i}"]`);
+    if (boxContent) boxContent.innerHTML = '';
+  });
+
+  // resetear sprites del pool
+  Array.from(pokemonContainer.children).forEach(img => {
+    img.classList.remove('disabled');
+  });
+
+  state.boxes.forEach(boxState => {
+    const index = boxState.id;
+    const boxContent = document.querySelector(`.team-box-content[data-box-content="${index}"]`);
+    const titleEl = document.querySelector(`[data-box-title="${index}"]`);
+    if (titleEl && boxState.title) titleEl.textContent = boxState.title;
+
+    if (!boxContent) return;
+
+    boxState.pokemon.forEach(name => {
+      const src = `assets/pokemonsprites/${name}.png`;
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = name;
+      img.title = capitalizeName(name);
+      img.className = 'sprite';
+      img.dataset.name = name;
+      img.dataset.location = `team-${index}`;
+      img.draggable = true;
+      addDragEvents(img);
+      boxContent.appendChild(img);
+
+      const original = pokemonContainer.querySelector(`img[data-name="${name}"]`);
+      if (original) original.classList.add('disabled');
+    });
+  });
+}
+
+function saveState() {
+  const state = getStateFromDOM();
+  localStorage.setItem(TEAM_STATE_KEY, JSON.stringify(state));
+}
+
+function loadState() {
+  const raw = localStorage.getItem(TEAM_STATE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+// ---------- drop en cajas ----------
 teamBoxes.forEach(box => {
   box.addEventListener('dragover', e => e.preventDefault());
   box.addEventListener('drop', e => {
@@ -24,7 +95,6 @@ teamBoxes.forEach(box => {
     const src = e.dataTransfer.getData('src');
     const from = e.dataTransfer.getData('from');
 
-    // límite por caja
     if (box.children.length >= 6) {
       alert('No puedes agregar más de 6 pokémones en un equipo.');
       return;
@@ -36,7 +106,6 @@ teamBoxes.forEach(box => {
       return;
     }
 
-    // quitar de caja anterior si venía de otra
     if (from.startsWith('team-')) {
       const fromBoxIndex = from.split('-')[1];
       const fromBox = document.querySelector(`.team-box-content[data-box-content="${fromBoxIndex}"]`);
@@ -46,7 +115,6 @@ teamBoxes.forEach(box => {
       }
     }
 
-    // crear sprite en nueva caja
     const index = box.dataset.boxContent;
     const img = document.createElement('img');
     img.src = src;
@@ -59,13 +127,14 @@ teamBoxes.forEach(box => {
     addDragEvents(img);
     box.appendChild(img);
 
-    // deshabilitar en pool
     const original = pokemonContainer.querySelector(`img[data-name="${name}"]`);
     if (original) original.classList.add('disabled');
+
+    saveState();
   });
 });
 
-// drop en contenedor principal (devolver)
+// ---------- drop en contenedor principal ----------
 pokemonContainer.addEventListener('dragover', e => e.preventDefault());
 pokemonContainer.addEventListener('drop', e => {
   e.preventDefault();
@@ -97,9 +166,11 @@ pokemonContainer.addEventListener('drop', e => {
     addDragEvents(img);
     pokemonContainer.appendChild(img);
   }
+
+  saveState();
 });
 
-// carga inicial
+// ---------- carga inicial de sprites ----------
 fetch('./pklist.json')
   .then(res => res.json())
   .then(pokemonList => {
@@ -115,10 +186,14 @@ fetch('./pklist.json')
       addDragEvents(img);
       pokemonContainer.appendChild(img);
     });
+
+    // aplicar estado guardado si existe
+    const saved = loadState();
+    if (saved) applyStateToDOM(saved);
   })
   .catch(err => console.error('Error cargando lista de Pokémon:', err));
 
-// buscador
+// ---------- buscador ----------
 const searchInput = document.getElementById('pokemon-search');
 searchInput.addEventListener('input', () => {
   const filter = searchInput.value.toLowerCase();
@@ -128,17 +203,18 @@ searchInput.addEventListener('input', () => {
   });
 });
 
-// botón ocultar/mostrar caja
+// ---------- ocultar/mostrar caja ----------
 document.querySelectorAll('.toggle-box-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const index = btn.dataset.boxToggle;
     const box = document.querySelector(`.team-box[data-box="${index}"]`);
     if (!box) return;
     box.classList.toggle('collapsed');
+    saveState();
   });
 });
 
-// botón vaciar caja (papelera)
+// ---------- vaciar caja ----------
 document.querySelectorAll('.clear-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const index = btn.dataset.boxClear;
@@ -152,5 +228,14 @@ document.querySelectorAll('.clear-btn').forEach(btn => {
       const original = pokemonContainer.querySelector(`img[data-name="${name}"]`);
       if (original) original.classList.remove('disabled');
     });
+
+    saveState();
+  });
+});
+
+// ---------- guardar cambios de nombre de caja ----------
+document.querySelectorAll('.team-box-title').forEach(titleEl => {
+  titleEl.addEventListener('blur', () => {
+    saveState();
   });
 });
