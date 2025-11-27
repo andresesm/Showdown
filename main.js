@@ -177,7 +177,7 @@ function createTeamBox(boxState) {
   // reconstruir pokémon si vienen en estado
   if (boxState.pokemon && boxState.pokemon.length) {
     boxState.pokemon.forEach(name => {
-      const src = `assets/pokemonsprites/${name}.png`;
+      const src = `assets/pokemonsprites/webp/${name}.webp`;
       const img = document.createElement('img');
       img.src = src;
       img.alt = name;
@@ -253,7 +253,7 @@ fetch('./pklist.json')
     list.forEach(p => {
       const name = p.name; // nombre del sprite
       const img = document.createElement('img');
-      img.src = `assets/pokemonsprites/${name}.png`;
+      img.src = `assets/pokemonsprites/webp/${name}.webp`;
       img.alt = name;
       img.title = capitalizeName(name);
       img.draggable = true;
