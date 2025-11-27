@@ -29,7 +29,7 @@
 }
 
 .sprite {
-  width: 65px; /* ajustado para que entren 3 por fila en la caja */
+  width: 65px;
   cursor: grab;
   position: relative;
 }
@@ -41,24 +41,9 @@
   position: relative;
 }
 
+/* Si luego quieres recuperar la X, puedes reactivar esta regla */
 .sprite.disabled::after {
-  content: '✖';
-  color: red;
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 20px;
-  font-weight: bold;
-  pointer-events: none;
-  user-select: none;
-  background: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
-  box-shadow: 0 0 2px rgba(0,0,0,0.5);
-  z-index: 10;
+  content: '';
 }
 
 #teams {
@@ -67,8 +52,8 @@
 }
 
 .team-box {
-  width: 220px;        /* más ancho para 3 sprites */
-  height: 260px;       /* altura fija para que no se estire */
+  width: 220px;
+  height: 260px;
   border: 2px dashed #333;
   padding: 10px;
   position: relative;
@@ -96,23 +81,23 @@
 
 .team-box-content {
   width: 100%;
-  margin-top: 30px;      /* espacio para el título */
+  margin-top: 30px;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
 
-  /* grid fijo 3x2, sin scroll */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
   justify-items: center;
   align-items: center;
   gap: 5px;
-  overflow: hidden;      /* asegura que no aparezca scroll */
+  overflow: hidden;
 }
 
 .team-box-buttons {
-  margin-top: 15px;
+  margin-top: auto; /* fuerza que los botones queden abajo */
+  padding-top: 10px;
   width: 100%;
   display: flex;
   justify-content: space-around;
