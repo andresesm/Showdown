@@ -29,7 +29,7 @@
 }
 
 .sprite {
-  width: 75px; /* 1.5x original 50px */
+  width: 65px; /* ajustado para que entren 3 por fila en la caja */
   cursor: grab;
   position: relative;
 }
@@ -67,7 +67,8 @@
 }
 
 .team-box {
-  width: 200px;
+  width: 220px;        /* más ancho para 3 sprites */
+  height: 260px;       /* altura fija para que no se estire */
   border: 2px dashed #333;
   padding: 10px;
   position: relative;
@@ -95,15 +96,19 @@
 
 .team-box-content {
   width: 100%;
-  height: 180px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 30px; /* espacio para el título */
-  overflow: auto;
+  margin-top: 30px;      /* espacio para el título */
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+
+  /* grid fijo 3x2, sin scroll */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  justify-items: center;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;      /* asegura que no aparezca scroll */
 }
 
 .team-box-buttons {
