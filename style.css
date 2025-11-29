@@ -51,17 +51,6 @@ h1 {
 
 /* buscador y contenedor principal */
 
-#pokemon-search {
-  width: 100%;
-  padding: 8px 10px;
-  font-size: 11px;
-  box-sizing: border-box;
-  display: block;
-  font-family: 'PKGF', system-ui, sans-serif;
-}
-
-/* contenedor buscador + botón borrar */
-
 #search-wrapper {
   width: 100%;
   max-width: 1060px;
@@ -72,6 +61,11 @@ h1 {
 
 #pokemon-search {
   flex: 1;
+  padding: 8px 10px;
+  font-size: 11px;
+  box-sizing: border-box;
+  display: block;
+  font-family: 'PKGF', system-ui, sans-serif;
 }
 
 #clear-search-btn {
@@ -83,7 +77,6 @@ h1 {
   background: #fff;
   font-family: 'PKGF', system-ui, sans-serif;
 }
-
 
 #pokemon-list-container {
   width: 100%;
@@ -189,10 +182,13 @@ h1 {
 
 .team-box-title {
   font-weight: bold;
-  font-size: 18px;
+  font-size: 17px; /* antes 18px */
   color: gray;
   user-select: none;
   font-family: 'PKGF', system-ui, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .toggle-box-btn,
@@ -249,6 +245,8 @@ h1 {
 .team-box.collapsed .team-box-buttons {
   display: none;
 }
+
+/* randomizador */
 
 #randomizer {
   display: flex;

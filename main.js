@@ -370,20 +370,40 @@ function createTeamBox(boxState) {
     }
   });
 
-  // evitar saltos de línea y usar Enter como "terminar de escribir"
+  // evitar saltos de línea, usar Enter como "terminar de escribir"
+  // y limitar a 10 caracteres
   titleEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       titleEl.blur();
+      return;
+    }
+
+    const text = titleEl.textContent || '';
+    const selection = window.getSelection();
+    const isReplacing =
+      selection && selection.rangeCount > 0 &&
+      !selection.getRangeAt(0).collapsed;
+
+    // si no está seleccionando texto y ya hay 10 caracteres, bloquear más entrada
+    if (!isReplacing && text.length >= 10 && e.key.length === 1) {
+      e.preventDefault();
     }
   });
 
   titleEl.addEventListener('blur', () => {
     let text = titleEl.textContent.trim();
+
+    // recortar por seguridad a 10 chars
+    if (text.length > 10) {
+      text = text.slice(0, 10);
+    }
+
     if (!text) {
       text = `Equipo ${id}`;
-      titleEl.textContent = text;
     }
+
+    titleEl.textContent = text;
     saveState();
   });
 
