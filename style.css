@@ -53,14 +53,37 @@ h1 {
 
 #pokemon-search {
   width: 100%;
-  max-width: 1060px;
   padding: 8px 10px;
-  margin: 0 auto 12px;
   font-size: 11px;
   box-sizing: border-box;
   display: block;
   font-family: 'PKGF', system-ui, sans-serif;
 }
+
+/* contenedor buscador + botón borrar */
+
+#search-wrapper {
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto 12px;
+  display: flex;
+  gap: 6px;
+}
+
+#pokemon-search {
+  flex: 1;
+}
+
+#clear-search-btn {
+  padding: 6px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #fff;
+  font-family: 'PKGF', system-ui, sans-serif;
+}
+
 
 #pokemon-list-container {
   width: 100%;
@@ -235,8 +258,7 @@ h1 {
   margin-bottom: 16px;
 }
 
-#randomizer-btn,
-#randomizer-spin-btn {
+#randomizer-btn {
   padding: 6px 14px;
   font-size: 14px;
   cursor: pointer;
