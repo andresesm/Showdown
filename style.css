@@ -56,7 +56,7 @@ h1 {
   max-width: 1060px;
   padding: 8px 10px;
   margin: 0 auto 12px;
-  font-size: 16px;
+  font-size: 11px;
   box-sizing: border-box;
   display: block;
   font-family: 'PKGF', system-ui, sans-serif;
@@ -107,10 +107,11 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1060px;
+  max-width: 1055px;
   margin: 0 auto 10px;
   font-weight: bold;
   font-family: 'PKGF', system-ui, sans-serif;
+  font-size: 13px;
 }
 
 #add-team-btn {
@@ -120,7 +121,7 @@ h1 {
   border: 1px solid #333;
   background: #fff;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 13px;
   line-height: 24px;
   padding: 0;
   font-family: 'PKGF', system-ui, sans-serif;

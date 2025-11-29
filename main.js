@@ -39,6 +39,20 @@ function generateTeamId() {
   return id;
 }
 
+// devuelve mapa name -> boxId donde está usado
+function getPokemonUsage() {
+  const usage = {}; // name -> boxId
+  const boxElems = document.querySelectorAll('.team-box');
+  boxElems.forEach(box => {
+    const id = Number(box.dataset.box);
+    const content = box.querySelector('.team-box-content');
+    Array.from(content.children).forEach(img => {
+      usage[img.dataset.name] = id;
+    });
+  });
+  return usage;
+}
+
 // ---------- estado ----------
 function getStateFromDOM() {
   const boxElems = document.querySelectorAll('.team-box');
@@ -241,9 +255,113 @@ function createTeamBox(boxState) {
     exportTeamToClipboard(id, boxName);
   });
 
-  // guardar cambios de nombre
+  // botón importar
+  const importBtn = box.querySelector('.import-btn');
+  importBtn.addEventListener('click', () => {
+    const raw = prompt('Pega la lista de nombres de pokémon (separados por coma o por líneas):');
+    if (!raw) return;
+
+    // normalizar: dividir por coma o salto de línea
+    let names = raw
+      .split(/[\n,]/)
+      .map(s => s.trim().toLowerCase())
+      .filter(s => s.length > 0);
+
+    // quitar duplicados internos
+    names = Array.from(new Set(names));
+
+    if (names.length === 0) {
+      alert('No se detectaron nombres válidos.');
+      return;
+    }
+
+    if (names.length > 6) {
+      alert('Tienes demasiados pokémon: máximo 6 por caja.');
+      return;
+    }
+
+    // verificar que todos existan en la pool
+    const invalid = names.filter(n => !pokemonContainer.querySelector(`img[data-name="${n}"]`));
+    if (invalid.length) {
+      alert('Los siguientes nombres no existen en la lista de pokémon: ' + invalid.join(', '));
+      return;
+    }
+
+    // verificar uso en otras cajas
+    const usage = getPokemonUsage();
+    const conflictos = [];
+    names.forEach(n => {
+      const usedIn = usage[n];
+      if (usedIn && usedIn !== id) {
+        conflictos.push({ name: n, box: usedIn });
+      }
+    });
+
+    if (conflictos.length) {
+      const msg = conflictos
+        .map(c => `- ${capitalizeName(c.name)} ya está siendo usado en la caja ${c.box}`)
+        .join('\n');
+      alert('No se puede importar porque:\n' + msg);
+      return;
+    }
+
+    // limpiar la caja actual primero (como vaciar)
+    const sprites = Array.from(content.children);
+    sprites.forEach(sprite => {
+      const name = sprite.dataset.name;
+      content.removeChild(sprite);
+      const original = pokemonContainer.querySelector(`img[data-name="${name}"]`);
+      if (original) original.classList.remove('disabled');
+    });
+
+    // añadir cada pokémon
+    names.forEach(name => {
+      const src = `assets/pokemonsprites/webp/${name}.webp`;
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = name;
+      img.title = capitalizeName(name);
+      img.className = 'sprite';
+      img.dataset.name = name;
+      img.dataset.location = `team-${id}`;
+      img.draggable = true;
+      addDragEvents(img);
+      content.appendChild(img);
+
+      const original = pokemonContainer.querySelector(`img[data-name="${name}"]`);
+      if (original) original.classList.add('disabled');
+    });
+
+    saveState();
+    alert('Importación completada correctamente.');
+  });
+
+  // guardar cambios de nombre (título de caja)
   const titleEl = box.querySelector('.team-box-title');
+
+  // al hacer foco por primera vez, si tiene el texto por defecto, vaciar
+  titleEl.addEventListener('focus', () => {
+    const current = titleEl.textContent.trim();
+    const defaultTitle = `Equipo ${id}`;
+    if (current === defaultTitle) {
+      titleEl.textContent = '';
+    }
+  });
+
+  // evitar saltos de línea y usar Enter como "terminar de escribir"
+  titleEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      titleEl.blur();
+    }
+  });
+
   titleEl.addEventListener('blur', () => {
+    let text = titleEl.textContent.trim();
+    if (!text) {
+      text = `Equipo ${id}`;
+      titleEl.textContent = text;
+    }
     saveState();
   });
 
@@ -344,15 +462,27 @@ fetch('./pklist.json')
   })
   .catch(err => console.error('Error cargando pklist.json:', err));
 
-// ---------- buscador ----------
+// ---------- buscador + botón borrar ----------
 const searchInput = document.getElementById('pokemon-search');
-searchInput.addEventListener('input', () => {
+const clearSearchBtn = document.getElementById('clear-search-btn');
+
+function applySearchFilter() {
   const filter = searchInput.value.toLowerCase();
   Array.from(pokemonContainer.children).forEach(img => {
     const name = img.dataset.name.toLowerCase();
     img.style.display = name.includes(filter) ? '' : 'none';
   });
-});
+}
+
+searchInput.addEventListener('input', applySearchFilter);
+
+if (clearSearchBtn) {
+  clearSearchBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    applySearchFilter();
+    searchInput.focus();
+  });
+}
 
 // ---------- botón agregar caja ----------
 addTeamBtn.addEventListener('click', () => {
