@@ -255,23 +255,52 @@ function createTeamBox(boxState) {
     exportTeamToClipboard(id, boxName);
   });
 
-  // botón importar
+  // botón importar (versión mejorada)
   const importBtn = box.querySelector('.import-btn');
   importBtn.addEventListener('click', () => {
-    const raw = prompt('Pega la lista de nombres de pokémon (separados por coma o por líneas):');
+    const raw = prompt(
+      'Pega tu lista de pokémon.\n' +
+      '- Puede ser el texto exportado completo.\n' +
+      '- O solo nombres separados por espacios, comas o saltos de línea.'
+    );
     if (!raw) return;
 
-    // normalizar: dividir por coma o salto de línea
-    let names = raw
-      .split(/[\n,]/)
-      .map(s => s.trim().toLowerCase())
-      .filter(s => s.length > 0);
+    // 1) Normalizar texto
+    const lower = raw.toLowerCase();
 
-    // quitar duplicados internos
+    // 2) Tokens por espacio / coma / salto de línea
+    const roughTokens = lower
+      .split(/[\s,]+/)
+      .map(t => t.trim())
+      .filter(t => t.length > 0);
+
+    // 3) Crear set de nombres válidos existentes en la web
+    const validNamesSet = new Set(
+      Array.from(pokemonContainer.children).map(img => img.dataset.name.toLowerCase())
+    );
+
+    // 4) Extraer nombres válidos desde tokens
+    let names = roughTokens.filter(t => validNamesSet.has(t));
+
+    // 5) Si no se encontró nada aún, probar por líneas (primer token de cada línea)
+    if (names.length === 0) {
+      const lines = lower.split(/\n+/);
+      lines.forEach(line => {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length) {
+          const first = parts[0].trim();
+          if (validNamesSet.has(first)) {
+            names.push(first);
+          }
+        }
+      });
+    }
+
+    // 6) Quitar duplicados internos
     names = Array.from(new Set(names));
 
     if (names.length === 0) {
-      alert('No se detectaron nombres válidos.');
+      alert('No se detectaron nombres de pokémon válidos en el texto.');
       return;
     }
 
@@ -280,14 +309,7 @@ function createTeamBox(boxState) {
       return;
     }
 
-    // verificar que todos existan en la pool
-    const invalid = names.filter(n => !pokemonContainer.querySelector(`img[data-name="${n}"]`));
-    if (invalid.length) {
-      alert('Los siguientes nombres no existen en la lista de pokémon: ' + invalid.join(', '));
-      return;
-    }
-
-    // verificar uso en otras cajas
+    // 7) Verificar uso en otras cajas
     const usage = getPokemonUsage();
     const conflictos = [];
     names.forEach(n => {
@@ -305,7 +327,7 @@ function createTeamBox(boxState) {
       return;
     }
 
-    // limpiar la caja actual primero (como vaciar)
+    // 8) Limpiar la caja actual primero
     const sprites = Array.from(content.children);
     sprites.forEach(sprite => {
       const name = sprite.dataset.name;
@@ -314,7 +336,7 @@ function createTeamBox(boxState) {
       if (original) original.classList.remove('disabled');
     });
 
-    // añadir cada pokémon
+    // 9) Añadir cada pokémon importado
     names.forEach(name => {
       const src = `assets/pokemonsprites/webp/${name}.webp`;
       const img = document.createElement('img');
