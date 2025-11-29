@@ -272,11 +272,22 @@ h1 {
   min-height: 110px;
 }
 
+/* estilo genérico para sprites del randomizador (pokémon) */
 #randomizer-sprite {
   width: 80px;
   height: 80px;
   image-rendering: pixelated;
 }
+
+/* estilo solo para la imagen de questionmark */
+#randomizer-sprite.randomizer-question {
+  max-width: 75px;
+  max-height: 75px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
 
 #randomizer-name {
   margin-top: 4px;

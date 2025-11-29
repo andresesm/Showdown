@@ -567,6 +567,9 @@ function startRandomizerAnimation() {
     const name = pickRandomPokemon();
     if (!name) return;
 
+    // quitar estilo de questionmark una vez que empieza a girar
+    randomizerImg.classList.remove('randomizer-question');
+
     randomizerImg.src = `assets/pokemonsprites/webp/${name}.webp`;
     randomizerImg.alt = name;
     randomizerImg.title = capitalizeName(name);
